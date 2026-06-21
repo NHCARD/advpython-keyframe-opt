@@ -289,7 +289,7 @@ EOF
 
 | 파일 | 설명 |
 |------|------|
-| `inference_crop_convex_refine_.py` | **최적화 후** 메인 스크립트 |
+| `inference_crop_convex_refine_.py` | **최적화 후** 메인 스크립트 (opt 브랜치) |
 | `inference_crop_convex.py` | **최적화 전** 원본 스크립트 (main 브랜치) |
 | `inference_crop.py` | 단순 crop 버전 (수동 프레임) |
 | `inference_ho3d.py` | FPS 기반 시퀀스별 실행 |
