@@ -1,0 +1,12 @@
+os: Linux-6.8.0-124-generic-x86_64-with-glibc2.39
+python: 3.10.20
+numpy: 2.2.5
+cpu: Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz
+D: 384
+K: 32
+seed: 42
+warmup: 1
+
+N_values: [500, 1000, 2000, 4000, 8000]
+K=32, D=384, seed=42, batch_size=16
+repeats: {500: 10, 1000: 10, 2000: 10, 4000: 10, 8000: 5}

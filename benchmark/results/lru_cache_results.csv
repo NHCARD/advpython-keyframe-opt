@@ -1,0 +1,2 @@
+N,total_with_cache_ms,total_without_cache_ms,phase2_hit_ms,phase2_miss_ms,phase2_speedup,total_speedup,cache_hits,cache_misses,hit_rate_pct
+500,1384.7962017869577,2608.19183960557,0.037099048495292664,1288.1367783760652,34721.55838550714,1.8834481465503208,500,500,50.0
