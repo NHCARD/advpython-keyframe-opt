@@ -99,44 +99,17 @@ ho3d_v3/
 > **데이터 경로**: 스크립트 기본값은 `--train_root` 인자로 지정합니다.  
 > shell 스크립트의 `TRAIN_ROOT` 변수를 실제 `ho3d_v3/train` 경로로 수정하세요.
 
-### Synthetic 마스크 생성 (실제 데이터 없이 테스트)
+### 샘플 데이터 (`sample/ABF12`)
 
-HO3D 마스크 형식(픽셀값 50=물체, 150=손, 0=배경)의 더미 데이터를 생성합니다.
+저장소에 ABF12 시퀀스의 10프레임(0099 ~ 0999, 100프레임 간격)이 포함되어 있습니다.  
+HO3D 전체 데이터 없이도 파이프라인을 즉시 실행해볼 수 있습니다.
 
-```python
-# synthetic_data.py
-import os
-import numpy as np
-from PIL import Image
-
-def generate_synthetic_sequence(out_dir, n_frames=50, H=480, W=640):
-    rgb_dir  = os.path.join(out_dir, "rgb")
-    mask_dir = os.path.join(out_dir, "masks")
-    os.makedirs(rgb_dir,  exist_ok=True)
-    os.makedirs(mask_dir, exist_ok=True)
-
-    rng = np.random.default_rng(42)
-    for i in range(n_frames):
-        # RGB: 랜덤 자연 이미지 근사
-        rgb = rng.integers(80, 200, (H, W, 3), dtype=np.uint8)
-        Image.fromarray(rgb).save(os.path.join(rgb_dir, f"{i:04d}.jpg"))
-
-        # 마스크: 중앙에 물체(50), 물체 주변 일부에 손(150)
-        mask = np.zeros((H, W), dtype=np.uint8)
-        cy, cx = H // 2 + rng.integers(-40, 40), W // 2 + rng.integers(-60, 60)
-        ys, xs = np.ogrid[:H, :W]
-        mask[(ys - cy)**2 + (xs - cx)**2 < 60**2] = 50   # 물체
-        mask[(ys - cy)**2 + (xs - (cx + 55))**2 < 30**2] = 150  # 손
-        Image.fromarray(mask).save(os.path.join(mask_dir, f"{i:04d}.png"))
-
-    print(f"Generated {n_frames} frames in {out_dir}")
-
-if __name__ == "__main__":
-    generate_synthetic_sequence("./synthetic_seq/test_seq")
 ```
-
-```bash
-python synthetic_data.py
+sample/
+└── ABF12/
+    ├── rgb/     # 0099.jpg, 0199.jpg, ... 0999.jpg  (10장)
+    ├── masks/   # 0099.png, 0199.png, ... 0999.png
+    └── meta/    # 0099.pkl, 0199.pkl, ... 0999.pkl
 ```
 
 ---
@@ -175,12 +148,11 @@ bash run_all_ho3d_convex.sh                         # 기본: n_views=4,6,8
 bash run_all_ho3d_convex.sh --n_views 4 6           # 특정 n_views만
 ```
 
-#### Synthetic 데이터로 테스트
+#### 샘플 데이터로 빠른 테스트 (`sample/ABF12` — 10프레임 수록)
 
 ```bash
-python synthetic_data.py   # 더미 시퀀스 생성
 python inference_crop_convex_refine_.py \
-    --seq_dir ./synthetic_seq/test_seq \
+    --seq_dir ./sample/ABF12 \
     --auto_select --n_views 4
 ```
 
@@ -289,7 +261,7 @@ EOF
 
 | 파일 | 설명 |
 |------|------|
-| `inference_crop_convex_refine_.py` | **최적화 후** 메인 스크립트 (opt 브랜치) |
+| `inference_crop_convex_refine_.py` | **최적화 후** 메인 스크립트 |
 | `inference_crop_convex.py` | **최적화 전** 원본 스크립트 (main 브랜치) |
 | `inference_crop.py` | 단순 crop 버전 (수동 프레임) |
 | `inference_ho3d.py` | FPS 기반 시퀀스별 실행 |
